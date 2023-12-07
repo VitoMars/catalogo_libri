@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
-    <h1>Lista dei Libri</h1>
+  <v-card class="home" elevation="4" shaped>
+    <h1 class="text-center">Lista dei Libri</h1>
     <BookList></BookList>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -30,5 +30,9 @@ export default {
 .home h1 {
   font-size: 24px;
   margin-bottom: 16px;
+}
+
+.text-center {
+  text-align: center;
 }
 </style>

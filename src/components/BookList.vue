@@ -1,5 +1,6 @@
 <template>
    <div>
+      <v-progress-linear v-if="loading" indeterminate />
       <v-list>
          <v-list-item-group v-if="books.length">
             <v-list-item v-for="book in books" :key="book.id">
@@ -9,7 +10,7 @@
                </v-list-item-content>
             </v-list-item>
          </v-list-item-group>
-         <v-alert v-else :value="true" type="info" icon="mdi-information" border="left" colored-border elevation="2">
+         <v-alert v-else :value="true" shaped type="info" icon="mdi-information" class="my-3 mx-4">
             Nessun libro trovato.
          </v-alert>
       </v-list>
@@ -22,6 +23,7 @@ import api from '@/apis/api.js'
 export default {
    data() {
       return {
+         loading: false,
          books: [],
 
          // Example
@@ -44,6 +46,8 @@ export default {
    },
    async created() {
       try {
+         this.loading = true;
+
          const { reading_log_entries } = await api.getBooks();
 
          this.books = reading_log_entries.map((apiBook, index) => ({
@@ -56,8 +60,9 @@ export default {
          console.log("Books:", this.books);
       } catch (error) {
          console.error('Errore durante il caricamento dei libri:', error);
+      } finally {
+         this.loading = false;
       }
    },
 };
 </script>
- 
