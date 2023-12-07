@@ -1,6 +1,24 @@
 <template>
    <div>
+      <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
+
+      <!-- Modulo di inserimento -->
+      <v-dialog v-model="addBookDialog" max-width="500">
+         <v-card>
+            <v-card-title>Aggiungi nuovo libro</v-card-title>
+            <v-card-text>
+               <v-form @submit.prevent="addBook">
+                  <v-text-field v-model="newBook.title" label="Titolo" required></v-text-field>
+                  <v-text-field v-model="newBook.author" label="Autore" required></v-text-field>
+                  <v-text-field v-model="newBook.publish_year" label="Anno di pubblicazione"></v-text-field>
+                  <v-btn type="submit" color="primary">Aggiungi libro</v-btn>
+               </v-form>
+            </v-card-text>
+         </v-card>
+      </v-dialog>
+
+      <!-- Lista dei libri -->
       <v-list>
          <v-list-item-group v-if="books.length">
             <v-list-item v-for="book in books" :key="book.id">
@@ -10,10 +28,20 @@
                </v-list-item-content>
             </v-list-item>
          </v-list-item-group>
-         <v-alert v-else :value="true" shaped type="info" icon="mdi-information" class="my-3 mx-4">
+         <v-alert v-else type="info" icon="mdi-information" class="my-3 mx-4" shaped>
             Nessun libro trovato.
          </v-alert>
       </v-list>
+
+      <!-- Pulsante per aggiungere un libro -->
+      <div class="d-flex justify-end mx-2">
+         <v-btn @click="openAddBookDialog" fab color="primary">
+            <v-icon>
+               mdi-plus
+            </v-icon>
+         </v-btn>
+      </div>
+
    </div>
 </template>
  
@@ -25,24 +53,37 @@ export default {
       return {
          loading: false,
          books: [],
-
-         // Example
-         // books: [
-         //    {
-         //       id: 1,
-         //       title: "Il Signore degli Anelli",
-         //       author: "J.R.R. Tolkien",
-         //       publish_year: "1999",
-         //    },
-         //    {
-         //       id: 2,
-         //       title: "1984",
-         //       author: "George Orwell",
-         //       publish_year: "1999",
-         //    },
-         // ]
-
+         addBookDialog: false,
+         newBook: {
+            title: '',
+            author: '',
+            publish_year: '',
+         },
       }
+   },
+   methods: {
+      // Metodo per aprire il modulo di inserimento
+      openAddBookDialog() {
+         this.addBookDialog = true;
+      },
+
+      // Metodo per aggiungere un nuovo libro
+      addBook() {
+         this.books.push({
+            id: this.books.length + 1,
+            title: this.newBook.title,
+            author: this.newBook.author,
+            publish_year: this.newBook.publish_year,
+         });
+
+         this.addBookDialog = false;
+
+         this.newBook = {
+            title: '',
+            author: '',
+            publish_year: '',
+         };
+      },
    },
    async created() {
       try {

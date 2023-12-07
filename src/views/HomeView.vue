@@ -1,7 +1,7 @@
 <template>
   <v-card class="home" elevation="4" shaped>
     <h1 class="text-center">Lista dei Libri</h1>
-    <BookList></BookList>
+    <BookList />
   </v-card>
 </template>
 
