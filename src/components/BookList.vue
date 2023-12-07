@@ -26,12 +26,32 @@
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
+               <v-list-item-action>
+                  <v-btn @click="openDeleteBookDialog(book)" icon>
+                     <v-icon color="red">mdi-delete</v-icon>
+                  </v-btn>
+               </v-list-item-action>
             </v-list-item>
          </v-list-item-group>
          <v-alert v-else type="info" icon="mdi-information" class="my-3 mx-4" shaped>
             Nessun libro trovato.
          </v-alert>
       </v-list>
+
+      <!-- Dialog di conferma eliminazione -->
+      <v-dialog v-model="deleteBookDialog" max-width="400" persistent>
+         <v-card class="px-1 pb-2">
+            <v-card-title>Conferma eliminazione</v-card-title>
+            <v-card-text>
+               Sei sicuro di voler eliminare questo libro?
+            </v-card-text>
+
+            <v-card-actions class="d-flex justify-end">
+               <v-btn @click="deleteBookDialog = false" color="primary" text>Annulla</v-btn>
+               <v-btn @click="deleteBook" color="error">Elimina</v-btn>
+            </v-card-actions>
+         </v-card>
+      </v-dialog>
 
       <!-- Pulsante per aggiungere un libro -->
       <div class="d-flex justify-end mx-2">
@@ -54,11 +74,13 @@ export default {
          loading: false,
          books: [],
          addBookDialog: false,
+         deleteBookDialog: false,
          newBook: {
             title: '',
             author: '',
             publish_year: '',
          },
+         bookToDelete: null,
       }
    },
    methods: {
@@ -66,7 +88,11 @@ export default {
       openAddBookDialog() {
          this.addBookDialog = true;
       },
-
+      // Metodo per aprire la dialog di conferma eliminazione
+      openDeleteBookDialog(book) {
+         this.bookToDelete = book;
+         this.deleteBookDialog = true;
+      },
       // Metodo per aggiungere un nuovo libro
       addBook() {
          this.books.push({
@@ -83,6 +109,19 @@ export default {
             author: '',
             publish_year: '',
          };
+      },
+      // Metodo per confermare l'eliminazione del libro
+      deleteBook() {
+         if (this.bookToDelete) {
+            const index = this.books.findIndex(book => book.id === this.bookToDelete.id);
+
+            if (index !== -1) {
+               this.books.splice(index, 1);
+            }
+         }
+
+         this.deleteBookDialog = false;
+         this.bookToDelete = null;
       },
    },
    async created() {
