@@ -3,10 +3,15 @@
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
 
+      <div v-else>
+         <!-- Filtro per l'autore -->
+         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" class="mx-4" multiple chips dense />
+      </div>
+
       <!-- Lista dei libri -->
       <v-list>
          <v-list-item-group v-if="books.length">
-            <v-list-item v-for="book in books" :key="book.id">
+            <v-list-item v-for="book in filteredBooks" :key="book.id">
                <v-list-item-content>
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
@@ -91,6 +96,8 @@ export default {
       return {
          loading: false,
          books: [],
+         authors: [],
+         selectedAuthors: [],
          addBookDialog: false,
          editBookDialog: false,
          deleteBookDialog: false,
@@ -124,6 +131,12 @@ export default {
       },
       // Metodo per aggiungere un nuovo libro
       addBook() {
+         // Se l'autore non esiste lo aggiungiamo alla lista di autori
+         if (!this.authors.includes(this.newBook.author)) {
+            this.authors.push(this.newBook.author);
+         }
+
+         // Aggiunta libro
          this.books.push({
             id: this.books.length + 1,
             title: this.newBook.title,
@@ -131,8 +144,8 @@ export default {
             publish_year: this.newBook.publish_year,
          });
 
+         // Reset Dialog e newBook
          this.addBookDialog = false;
-
          this.newBook = {
             title: '',
             author: '',
@@ -142,15 +155,17 @@ export default {
       // Metodo per modificare un libro
       editBook() {
          if (this.bookToEdit) {
+            // Trovaviamo l'indice del libro da eliminare nell'array dei libri
             const index = this.books.findIndex(book => book.id === this.bookToEdit.id);
 
+            // Se l'indice è valido, sostituisco il libro esistente con il libro modificato
             if (index !== -1) {
                this.books.splice(index, 1, { ...this.bookToEdit });
             }
          }
 
+         // Reset Dialog e bookToEdit
          this.editBookDialog = false;
-
          this.bookToEdit = {
             title: '',
             author: '',
@@ -160,13 +175,16 @@ export default {
       // Metodo per elimianre un libro
       deleteBook() {
          if (this.bookToDelete) {
+            // Trovaviamo l'indice del libro da eliminare nell'array dei libri
             const index = this.books.findIndex(book => book.id === this.bookToDelete.id);
 
+            // Se l'indice è valido, elimino il libro
             if (index !== -1) {
                this.books.splice(index, 1);
             }
          }
 
+         // Reset Dialog e bookToDelete
          this.deleteBookDialog = false;
          this.bookToDelete = null;
       },
@@ -174,10 +192,13 @@ export default {
    // Recupero dati da API alla creazione del componente
    async created() {
       try {
+         // Caricamento per l'utente
          this.loading = true;
 
+         // Chiamata asincrona per ottenere i libri dall'API
          const { reading_log_entries } = await api.getBooks();
 
+         // Trasformo i dati ottenuti dalla chiamata API in un formato migliore
          this.books = reading_log_entries.map((apiBook, index) => ({
             id: index,
             title: apiBook.work.title ?? 'Sconosciuto',
@@ -186,11 +207,25 @@ export default {
          }));
 
          console.log("Books:", this.books);
+
+         // Creo una la lista degli autori dai libri
+         this.authors = this.books.map(book => book.author);
+
       } catch (error) {
          console.error('Errore durante il caricamento dei libri:', error);
       } finally {
+         // Disabilito il caricamento per l'utente
          this.loading = false;
       }
    },
+   computed: {
+      filteredBooks() {
+         return this.books.filter(book => {
+            // Se l'autore del libro è presente tra quelli selezionati o non ci sono autori selezionati
+            return this.selectedAuthors.includes(book.author) || this.selectedAuthors.length === 0;
+         });
+      },
+   },
+
 };
 </script>
