@@ -3,9 +3,22 @@
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
 
-      <div v-else>
+      <div v-else class="mx-4">
+         <!-- Ordinamento -->
+         <div>Ordina per</div>
+         <div class="d-flex justify-space-between align-center">
+            <v-radio-group v-model="sortCriteria" row>
+               <v-radio label="Titolo" value="title" />
+               <v-radio label="Anno di pubblicazione" value="publish_year" />
+            </v-radio-group>
+            <v-btn-toggle v-model="sortDirection">
+               <v-btn small :value="'asc'">Asc</v-btn>
+               <v-btn small :value="'desc'">Desc</v-btn>
+            </v-btn-toggle>
+         </div>
+
          <!-- Filtro per l'autore -->
-         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" class="mx-4" multiple chips dense />
+         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
       </div>
 
       <!-- Lista dei libri -->
@@ -13,11 +26,11 @@
          <v-list-item-group v-if="books.length">
             <v-list-item v-for="book in filteredBooks" :key="book.id">
                <v-list-item-action>
-                  <v-btn @click="openBookDetailDialog(book)" icon>
+                  <v-btn @click="openDetailBookDialog(book)" icon>
                      <v-icon color="green">mdi-information</v-icon>
                   </v-btn>
                </v-list-item-action>
-               <v-list-item-content @click="openBookDetailDialog(book)">
+               <v-list-item-content @click="openDetailBookDialog(book)">
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
@@ -125,6 +138,8 @@ export default {
             publish_year: '',
          },
          bookToDelete: null,
+         sortCriteria: 'title',
+         sortDirection: 'asc',
       }
    },
    methods: {
@@ -142,7 +157,7 @@ export default {
          this.bookToDelete = book;
          this.deleteBookDialog = true;
       },
-      openBookDetailDialog(book) {
+      openDetailBookDialog(book) {
          this.selectedBook = book;
          this.$refs.bookDetail.detailDialog = true;
       },
@@ -205,6 +220,15 @@ export default {
          this.deleteBookDialog = false;
          this.bookToDelete = null;
       },
+      sortBooks(books, criteria, direction) {
+         const sortedBooks = [...books];
+         if (criteria === 'title') {
+            sortedBooks.sort((a, b) => (direction === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)));
+         } else if (criteria === 'publish_year') {
+            sortedBooks.sort((a, b) => (direction === 'asc' ? a.publish_year - b.publish_year : b.publish_year - a.publish_year));
+         }
+         return sortedBooks;
+      },
    },
    // Recupero dati da API alla creazione del componente
    async created() {
@@ -238,10 +262,17 @@ export default {
    },
    computed: {
       filteredBooks() {
-         return this.books.filter(book => {
+         const sortedBooks = this.sortBooks(this.books, this.sortCriteria, this.sortDirection);
+
+         const filteredBooks = sortedBooks.filter((book) => {
             // Se l'autore del libro è presente tra quelli selezionati o non ci sono autori selezionati
-            return this.selectedAuthors.includes(book.author) || this.selectedAuthors.length === 0;
+            return (
+               this.selectedAuthors.includes(book.author) ||
+               this.selectedAuthors.length === 0
+            );
          });
+
+         return filteredBooks;
       },
    },
 
