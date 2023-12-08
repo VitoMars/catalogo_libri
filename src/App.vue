@@ -16,3 +16,11 @@ export default {
   }),
 };
 </script>
+
+<style>
+#app {
+  background-image: url(img/background.jpg);
+  background-size: cover;
+  background-position: center;
+}
+</style>
