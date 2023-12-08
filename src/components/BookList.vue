@@ -125,7 +125,7 @@ export default {
          loading: false,
          books: [],
          authors: [],
-         selectedBook: null,
+         selectedBook: {},
          selectedAuthors: [],
          addBookDialog: false,
          editBookDialog: false,
