@@ -17,13 +17,16 @@
             </v-btn-toggle>
          </div>
 
+         <!-- Campo per ricerca libro-->
+         <v-text-field v-model="searchBook" label="Cerca libro" />
+
          <!-- Filtro per l'autore -->
          <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
       </div>
 
       <!-- Lista dei libri -->
       <v-list>
-         <v-list-item-group v-if="books.length">
+         <v-list-item-group v-if="filteredBooks.length">
             <v-list-item v-for="book in filteredBooks" :key="book.id">
                <v-list-item-action>
                   <v-btn @click="openDetailBookDialog(book)" icon>
@@ -140,6 +143,7 @@ export default {
          bookToDelete: null,
          sortCriteria: 'title',
          sortDirection: 'asc',
+         searchBook: '',
       }
    },
    methods: {
@@ -262,8 +266,10 @@ export default {
    },
    computed: {
       filteredBooks() {
+         // Applichiamo l'ordinamento
          const sortedBooks = this.sortBooks(this.books, this.sortCriteria, this.sortDirection);
 
+         // Filtro autori
          const filteredBooks = sortedBooks.filter((book) => {
             // Se l'autore del libro è presente tra quelli selezionati o non ci sono autori selezionati
             return (
@@ -272,7 +278,10 @@ export default {
             );
          });
 
-         return filteredBooks;
+         // Filtro per titolo del libro
+         return filteredBooks.filter((book) =>
+            book.title.toLowerCase().includes(this.searchBook.toLowerCase())
+         );
       },
    },
 
