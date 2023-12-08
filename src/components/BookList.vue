@@ -57,7 +57,7 @@
                   <v-text-field v-model="bookToEdit.title" label="Titolo" required />
                   <v-text-field v-model="bookToEdit.author" label="Autore" required />
                   <v-text-field v-model="bookToEdit.publish_year" label="Anno di pubblicazione" />
-                  <v-btn @click="editBook" type="submit" color="primary">Salva modifiche</v-btn>
+                  <v-btn type="submit" color="primary">Salva modifiche</v-btn>
                </v-form>
             </v-card-text>
          </v-card>
