@@ -12,7 +12,12 @@
       <v-list>
          <v-list-item-group v-if="books.length">
             <v-list-item v-for="book in filteredBooks" :key="book.id">
-               <v-list-item-content>
+               <v-list-item-action>
+                  <v-btn @click="openBookDetailDialog(book)" icon>
+                     <v-icon color="green">mdi-information</v-icon>
+                  </v-btn>
+               </v-list-item-action>
+               <v-list-item-content @click="openBookDetailDialog(book)">
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
@@ -78,6 +83,9 @@
          </v-card>
       </v-dialog>
 
+      <!-- Dialog BookDetail come componente -->
+      <BookDetail ref="bookDetail" :selectedBook="selectedBook" />
+
       <!-- Pulsante per aggiungere un libro -->
       <div class="d-flex justify-end mx-2">
          <v-btn @click="openAddBookDialog" fab color="primary">
@@ -90,13 +98,18 @@
  
 <script>
 import api from '@/apis/api.js'
+import BookDetail from '@/components/BookDetail.vue';
 
 export default {
+   components: {
+      BookDetail,
+   },
    data() {
       return {
          loading: false,
          books: [],
          authors: [],
+         selectedBook: null,
          selectedAuthors: [],
          addBookDialog: false,
          editBookDialog: false,
@@ -128,6 +141,10 @@ export default {
       openDeleteBookDialog(book) {
          this.bookToDelete = book;
          this.deleteBookDialog = true;
+      },
+      openBookDetailDialog(book) {
+         this.selectedBook = book;
+         this.$refs.bookDetail.detailDialog = true;
       },
       // Metodo per aggiungere un nuovo libro
       addBook() {
@@ -204,6 +221,7 @@ export default {
             title: apiBook.work.title ?? 'Sconosciuto',
             author: apiBook.work.author_names[0] ?? 'Sconosciuto',
             publish_year: apiBook.work.first_publish_year ?? 'Sconosciuto',
+            cover_url: apiBook.work.cover_id ? `https://covers.openlibrary.org/b/id/${apiBook.work.cover_id}.jpg` : null,
          }));
 
          console.log("Books:", this.books);
