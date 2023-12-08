@@ -59,10 +59,11 @@
          <v-card>
             <v-card-title>Aggiungi nuovo libro</v-card-title>
             <v-card-text>
-               <v-form @submit.prevent="addBook">
-                  <v-text-field v-model="newBook.title" label="Titolo" required />
-                  <v-text-field v-model="newBook.author" label="Autore" required />
-                  <v-text-field v-model="newBook.publish_year" label="Anno di pubblicazione" />
+               <v-form @submit.prevent="addBook" ref="addBookForm">
+                  <v-text-field v-model="newBook.title" label="Titolo" :rules="[v => !!v || 'Il titolo è obbligatorio']" />
+                  <v-text-field v-model="newBook.author" label="Autore"
+                     :rules="[v => !!v || 'L\'autore è obbligatorio']" />
+                  <v-text-field v-model="newBook.publish_year" label="Anno di pubblicazione" :rules="yearRules" />
                   <v-btn type="submit" color="primary">Aggiungi libro</v-btn>
                </v-form>
             </v-card-text>
@@ -74,10 +75,12 @@
          <v-card>
             <v-card-title>Modifica libro</v-card-title>
             <v-card-text>
-               <v-form @submit.prevent="editBook">
-                  <v-text-field v-model="bookToEdit.title" label="Titolo" required />
-                  <v-text-field v-model="bookToEdit.author" label="Autore" required />
-                  <v-text-field v-model="bookToEdit.publish_year" label="Anno di pubblicazione" />
+               <v-form @submit.prevent="editBook" ref="editBookForm">
+                  <v-text-field v-model="bookToEdit.title" label="Titolo"
+                     :rules="[v => !!v || 'Il titolo è obbligatorio']" />
+                  <v-text-field v-model="bookToEdit.author" label="Autore"
+                     :rules="[v => !!v || 'L\'autore è obbligatorio']" />
+                  <v-text-field v-model="bookToEdit.publish_year" label="Anno di pubblicazione" :rules="yearRules" />
                   <v-btn type="submit" color="primary">Salva modifiche</v-btn>
                </v-form>
             </v-card-text>
@@ -144,6 +147,10 @@ export default {
          sortCriteria: 'title',
          sortDirection: 'asc',
          searchBook: '',
+         yearRules: [
+            v => /^\d{4}$/.test(v) || 'Inserisci un anno valido (es. 2023)',
+            v => (parseInt(v) >= 1600 && parseInt(v) <= 2023) || 'L\'anno deve essere compreso tra 1600 e 2023'
+         ]
       }
    },
    methods: {
@@ -167,46 +174,51 @@ export default {
       },
       // Metodo per aggiungere un nuovo libro
       addBook() {
-         // Se l'autore non esiste lo aggiungiamo alla lista di autori
-         if (!this.authors.includes(this.newBook.author)) {
-            this.authors.push(this.newBook.author);
+         // Verifica la validità dei campi
+         if (this.$refs.addBookForm.validate()) {
+            if (!this.authors.includes(this.newBook.author)) {
+               this.authors.push(this.newBook.author);
+            }
+
+            // Aggiunta libro
+            this.books.push({
+               id: this.books.length + 1,
+               title: this.newBook.title,
+               author: this.newBook.author,
+               publish_year: this.newBook.publish_year,
+            });
+
+            // Reset Dialog e newBook
+            this.addBookDialog = false;
+            this.newBook = {
+               title: '',
+               author: '',
+               publish_year: '',
+            };
          }
-
-         // Aggiunta libro
-         this.books.push({
-            id: this.books.length + 1,
-            title: this.newBook.title,
-            author: this.newBook.author,
-            publish_year: this.newBook.publish_year,
-         });
-
-         // Reset Dialog e newBook
-         this.addBookDialog = false;
-         this.newBook = {
-            title: '',
-            author: '',
-            publish_year: '',
-         };
       },
       // Metodo per modificare un libro
       editBook() {
-         if (this.bookToEdit) {
-            // Trovaviamo l'indice del libro da eliminare nell'array dei libri
-            const index = this.books.findIndex(book => book.id === this.bookToEdit.id);
+         // Verifica la validità dei campi
+         if (this.$refs.editBookForm.validate()) {
+            if (this.bookToEdit) {
+               // Trovaviamo l'indice del libro da eliminare nell'array dei libri
+               const index = this.books.findIndex(book => book.id === this.bookToEdit.id);
 
-            // Se l'indice è valido, sostituisco il libro esistente con il libro modificato
-            if (index !== -1) {
-               this.books.splice(index, 1, { ...this.bookToEdit });
+               // Se l'indice è valido, sostituisco il libro esistente con il libro modificato
+               if (index !== -1) {
+                  this.books.splice(index, 1, { ...this.bookToEdit });
+               }
             }
-         }
 
-         // Reset Dialog e bookToEdit
-         this.editBookDialog = false;
-         this.bookToEdit = {
-            title: '',
-            author: '',
-            publish_year: '',
-         };
+            // Reset Dialog e bookToEdit
+            this.editBookDialog = false;
+            this.bookToEdit = {
+               title: '',
+               author: '',
+               publish_year: '',
+            };
+         }
       },
       // Metodo per elimianre un libro
       deleteBook() {
@@ -249,7 +261,7 @@ export default {
             title: apiBook.work.title ?? 'Sconosciuto',
             author: apiBook.work.author_names[0] ?? 'Sconosciuto',
             publish_year: apiBook.work.first_publish_year ?? 'Sconosciuto',
-            cover_url: apiBook.work.cover_id ? `https://covers.openlibrary.org/b/id/${apiBook.work.cover_id}.jpg` : null,
+            cover_url: apiBook.work.cover_id ? `https://covers.openlibrary.org/b/id/${apiBook.work.cover_id}-L.jpg` : null,
          }));
 
          console.log("Books:", this.books);
