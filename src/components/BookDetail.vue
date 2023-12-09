@@ -14,7 +14,11 @@
             </v-list>
          </v-card-text>
 
-         <v-img :src="selectedBook.cover_url" max-height="500px" />
+         <div v-if="!imageLoaded" class="text-center">
+            <v-progress-circular indeterminate color="primary" />
+         </div>
+
+         <v-img :src="selectedBook.cover_url" :max-height="imageLoaded ? '500px' : 0" @load="handleImageLoad" />
 
          <v-card-actions class="d-flex justify-end">
             <v-btn @click="closeDetailDialog()" color="primary" text>Chiudi</v-btn>
@@ -31,11 +35,15 @@ export default {
    data() {
       return {
          detailDialog: false,
+         imageLoaded: false,
       };
    },
    methods: {
       closeDetailDialog() {
          this.detailDialog = false;
+      },
+      handleImageLoad() {
+         this.imageLoaded = true;
       },
    },
 };

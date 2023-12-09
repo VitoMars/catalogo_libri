@@ -150,6 +150,7 @@ export default {
          yearRules: [
             v => /^\d{4}$/.test(v) || 'Inserisci un anno valido (es. 2023)',
             v => (parseInt(v) >= 1600 && parseInt(v) <= 2023) || 'L\'anno deve essere compreso tra 1600 e 2023'
+            // Potevo utilizzare una libreria per la gestione delle date come "moment" o "day.js" per ricavare l'anno corrente ma essendo un progetto di test ho evitato
          ]
       }
    },
