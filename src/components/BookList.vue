@@ -39,12 +39,12 @@
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
-               <v-list-item-action class="mx-0 mx-sm-3">
+               <v-list-item-action class="mx-0 mx-sm-2">
                   <v-btn @click="openEditBookDialog(book)" icon>
                      <v-icon color="blue">mdi-pencil</v-icon>
                   </v-btn>
                </v-list-item-action>
-               <v-list-item-action class="mx-0 mx-sm-3">
+               <v-list-item-action class="mx-0 mx-sm-2">
                   <v-btn @click="openDeleteBookDialog(book)" icon>
                      <v-icon color="red">mdi-delete</v-icon>
                   </v-btn>
