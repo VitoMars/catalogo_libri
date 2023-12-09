@@ -13,7 +13,7 @@
         </v-tab>
       </v-tabs>
 
-      <div class="container my-5">
+      <div class="container">
         <router-view />
       </div>
     </v-main>
@@ -64,6 +64,6 @@ export default {
 .container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px;
 }
 </style>

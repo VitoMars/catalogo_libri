@@ -1,5 +1,5 @@
 <template>
-   <v-card elevation="4" shaped class="px-5 py-5">
+   <v-card elevation="4" class="rounded-xl pa-5">
       <h1 class="text-center">Lista libri</h1>
 
       <!-- Caricamento visivo per l'utente -->
@@ -8,7 +8,7 @@
       <div v-else class="mx-4">
          <!-- Ordinamento -->
          <div>Ordina per</div>
-         <div class="d-flex justify-space-between align-center">
+         <div class="d-flex justify-space-between align-center flex-wrap">
             <v-radio-group v-model="sortCriteria" row>
                <v-radio label="Titolo" value="title" />
                <v-radio label="Anno di pubblicazione" value="publish_year" />
@@ -29,8 +29,8 @@
       <!-- Lista dei libri -->
       <v-list>
          <v-list-item-group v-if="filteredBooks.length">
-            <v-list-item v-for="book in filteredBooks" :key="book.id">
-               <v-list-item-action>
+            <v-list-item v-for="book in filteredBooks" :key="book.id" class="d-flex flex-wrap">
+               <v-list-item-action class="d-none d-sm-flex">
                   <v-btn @click="openDetailBookDialog(book)" icon>
                      <v-icon color="green">mdi-information</v-icon>
                   </v-btn>
@@ -39,12 +39,12 @@
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
-               <v-list-item-action>
+               <v-list-item-action class="mx-0 mx-sm-3">
                   <v-btn @click="openEditBookDialog(book)" icon>
                      <v-icon color="blue">mdi-pencil</v-icon>
                   </v-btn>
                </v-list-item-action>
-               <v-list-item-action>
+               <v-list-item-action class="mx-0 mx-sm-3">
                   <v-btn @click="openDeleteBookDialog(book)" icon>
                      <v-icon color="red">mdi-delete</v-icon>
                   </v-btn>
