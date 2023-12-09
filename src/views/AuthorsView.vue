@@ -1,5 +1,5 @@
 <template>
-   <div class="about">
-      <h1>This is an author page</h1>
-   </div>
+   <v-card elevation="4" shaped class="px-5 py-5">
+      <h1 class="text-center">Lista autori</h1>
+   </v-card>
 </template>

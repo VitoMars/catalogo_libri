@@ -1,6 +1,6 @@
 <template>
-   <div>
-      <h1 class="text-center">Lista dei libri</h1>
+   <v-card elevation="4" shaped class="px-5 py-5">
+      <h1 class="text-center">Lista libri</h1>
 
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
@@ -114,7 +114,7 @@
          </v-btn>
       </div>
 
-   </div>
+   </v-card>
 </template>
  
 <script>

@@ -2,7 +2,6 @@
   <v-app>
     <v-main>
       <v-tabs v-model="tab" background-color="grey darken-4" centered dark icons-and-text>
-        <v-tabs-slider></v-tabs-slider>
         <v-tab href="#tab-1" @click="navigateTo('/')">
           Libri
           <v-icon>mdi-bookshelf</v-icon>
@@ -14,9 +13,9 @@
         </v-tab>
       </v-tabs>
 
-      <v-card class="home my-5" elevation="4" shaped>
+      <div class="container my-5">
         <router-view />
-      </v-card>
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -35,6 +34,23 @@ export default {
         this.$router.push(route);
       }
     },
+    updateTab() {
+      // Imposta il valore della tab sulla base della rotta corrente
+      switch (this.$route.path) {
+        case '/':
+          this.tab = 'tab-1';
+          break;
+        case '/authors':
+          this.tab = 'tab-2';
+          break;
+        default:
+          this.tab = 'tab-1'
+          break;
+      }
+    },
+  },
+  mounted() {
+    this.updateTab();
   },
 };
 </script>
@@ -45,10 +61,9 @@ export default {
   background-size: cover;
 }
 
-.home {
-  max-width: 800px !important;
+.container {
+  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid black;
 }
 </style>
