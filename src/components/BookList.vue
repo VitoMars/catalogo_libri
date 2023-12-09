@@ -116,8 +116,9 @@
 </template>
  
 <script>
-import api from '@/apis/api.js'
+// import api from '@/apis/api.js'
 import BookDetail from '@/components/BookDetail.vue';
+import { mapGetters } from 'vuex';
 
 export default {
    components: {
@@ -125,9 +126,9 @@ export default {
    },
    data() {
       return {
-         loading: false,
-         books: [],
-         authors: [],
+         // loading: false,
+         // books: [],
+         // authors: [],
          selectedBook: {},
          selectedAuthors: [],
          addBookDialog: false,
@@ -247,37 +248,12 @@ export default {
          return sortedBooks;
       },
    },
-   // Recupero dati da API alla creazione del componente
-   async created() {
-      try {
-         // Caricamento per l'utente
-         this.loading = true;
-
-         // Chiamata asincrona per ottenere i libri dall'API
-         const { reading_log_entries } = await api.getBooks();
-
-         // Trasformo i dati ottenuti dalla chiamata API in un formato migliore
-         this.books = reading_log_entries.map((apiBook, index) => ({
-            id: index,
-            title: apiBook.work.title ?? 'Sconosciuto',
-            author: apiBook.work.author_names[0] ?? 'Sconosciuto',
-            publish_year: apiBook.work.first_publish_year ?? 'Sconosciuto',
-            cover_url: apiBook.work.cover_id ? `https://covers.openlibrary.org/b/id/${apiBook.work.cover_id}-L.jpg` : null,
-         }));
-
-         console.log("Books:", this.books);
-
-         // Creo una la lista degli autori dai libri
-         this.authors = this.books.map(book => book.author);
-
-      } catch (error) {
-         console.error('Errore durante il caricamento dei libri:', error);
-      } finally {
-         // Disabilito il caricamento per l'utente
-         this.loading = false;
-      }
+   created() {
+      this.$store.dispatch('loadBooks');
    },
    computed: {
+      ...mapGetters(['loading', 'books', 'authors']),
+
       filteredBooks() {
          // Applichiamo l'ordinamento
          const sortedBooks = this.sortBooks(this.books, this.sortCriteria, this.sortDirection);
