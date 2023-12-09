@@ -1,5 +1,7 @@
 <template>
    <div>
+      <h1 class="text-center">Lista dei libri</h1>
+
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
 
