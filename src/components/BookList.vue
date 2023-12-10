@@ -5,9 +5,15 @@
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
 
-      <div v-else class="mx-4">
+      <div v-else class="mx-4 mt-4">
+         <!-- Campo per ricerca libro-->
+         <v-text-field v-model="searchBook" label="Cerca libro" />
+
+         <!-- Filtro per l'autore -->
+         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
+
          <!-- Ordinamento -->
-         <div>Ordina per</div>
+         <div class="grey--text text--darken-3">Ordina per</div>
          <div class="d-flex justify-space-between align-center flex-wrap">
             <v-radio-group v-model="sortCriteria" row>
                <v-radio label="Titolo" value="title" />
@@ -18,18 +24,12 @@
                <v-btn small :value="'desc'">Desc</v-btn>
             </v-btn-toggle>
          </div>
-
-         <!-- Campo per ricerca libro-->
-         <v-text-field v-model="searchBook" label="Cerca libro" />
-
-         <!-- Filtro per l'autore -->
-         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
       </div>
 
       <!-- Lista dei libri -->
       <v-list>
          <v-list-item-group v-if="filteredBooks.length">
-            <v-list-item v-for="book in filteredBooks" :key="book.id" class="d-flex flex-wrap">
+            <v-list-item v-for="book in filteredBooks" :key="book.id">
                <v-list-item-action class="d-none d-sm-flex">
                   <v-btn @click="openDetailBookDialog(book)" icon>
                      <v-icon color="green">mdi-information</v-icon>
