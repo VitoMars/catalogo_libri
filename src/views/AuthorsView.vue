@@ -1,5 +1,14 @@
 <template>
-   <v-card elevation="4" class="rounded-xl pa-5">
-      <h1 class="text-center">Lista autori</h1>
-   </v-card>
+   <AuthorsList />
 </template>
+
+<script>
+import AuthorsList from "@/components/AuthorsList.vue";
+
+export default {
+   name: 'AuthorsView',
+   components: {
+      AuthorsList,
+   },
+}
+</script>
