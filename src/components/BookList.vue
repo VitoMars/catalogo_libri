@@ -177,20 +177,33 @@ export default {
          this.$refs.bookDetail.detailDialog = true;
       },
       // Metodo per aggiungere un nuovo libro
-      addBook() {
-         // Verifica la validità dei campi
-         if (this.$refs.addBookForm.validate()) {
-            if (!this.authors.includes(this.newBook.author)) {
-               this.authors.push(this.newBook.author);
-            }
+      // addBook() {
+      //    // Verifica la validità dei campi
+      //    if (this.$refs.addBookForm.validate()) {
+      //       if (!this.authors.includes(this.newBook.author)) {
+      //          this.authors.push(this.newBook.author);
+      //       }
 
-            // Aggiunta libro
-            this.books.push({
-               id: this.books.length + 1,
-               title: this.newBook.title,
-               author: this.newBook.author,
-               publish_year: this.newBook.publish_year,
-            });
+      //       // Aggiunta libro
+      //       this.books.push({
+      //          id: this.books.length + 1,
+      //          title: this.newBook.title,
+      //          author: this.newBook.author,
+      //          publish_year: this.newBook.publish_year,
+      //       });
+
+      //       // Reset Dialog e newBook
+      //       this.addBookDialog = false;
+      //       this.newBook = {
+      //          title: '',
+      //          author: '',
+      //          publish_year: '',
+      //       };
+      //    }
+      // },
+      async addBook() {
+         try {
+            await this.$store.dispatch('addBook', this.newBook);
 
             // Reset Dialog e newBook
             this.addBookDialog = false;
@@ -199,6 +212,8 @@ export default {
                author: '',
                publish_year: '',
             };
+         } catch (error) {
+            console.error('Errore durante l\'aggiunta del libro:', error);
          }
       },
       // Metodo per modificare un libro
