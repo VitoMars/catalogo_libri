@@ -1,5 +1,14 @@
 <template>
-   <div class="about">
-      <h1>This is an author page</h1>
-   </div>
+   <AuthorsList />
 </template>
+
+<script>
+import AuthorsList from "@/components/AuthorsList.vue";
+
+export default {
+   name: 'AuthorsView',
+   components: {
+      AuthorsList,
+   },
+}
+</script>

@@ -1,12 +1,20 @@
 <template>
-   <div>
+   <v-card elevation="4" class="rounded-xl pa-5">
+      <h1 class="text-center">Lista libri</h1>
+
       <!-- Caricamento visivo per l'utente -->
       <v-progress-linear v-if="loading" indeterminate />
 
-      <div v-else class="mx-4">
+      <div v-else class="mx-4 mt-4">
+         <!-- Campo per ricerca libro-->
+         <v-text-field v-model="searchBook" label="Cerca libro" />
+
+         <!-- Filtro per l'autore -->
+         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
+
          <!-- Ordinamento -->
-         <div>Ordina per</div>
-         <div class="d-flex justify-space-between align-center">
+         <div class="grey--text text--darken-3">Ordina per</div>
+         <div class="d-flex justify-space-between align-center flex-wrap">
             <v-radio-group v-model="sortCriteria" row>
                <v-radio label="Titolo" value="title" />
                <v-radio label="Anno di pubblicazione" value="publish_year" />
@@ -16,19 +24,13 @@
                <v-btn small :value="'desc'">Desc</v-btn>
             </v-btn-toggle>
          </div>
-
-         <!-- Campo per ricerca libro-->
-         <v-text-field v-model="searchBook" label="Cerca libro" />
-
-         <!-- Filtro per l'autore -->
-         <v-select v-model="selectedAuthors" :items="authors" label="Filtro autori" multiple chips dense />
       </div>
 
       <!-- Lista dei libri -->
       <v-list>
          <v-list-item-group v-if="filteredBooks.length">
             <v-list-item v-for="book in filteredBooks" :key="book.id">
-               <v-list-item-action>
+               <v-list-item-action class="d-none d-sm-flex">
                   <v-btn @click="openDetailBookDialog(book)" icon>
                      <v-icon color="green">mdi-information</v-icon>
                   </v-btn>
@@ -37,12 +39,12 @@
                   <v-list-item-title>{{ book.title }}</v-list-item-title>
                   <v-list-item-subtitle>{{ book.author }} - {{ book.publish_year }}</v-list-item-subtitle>
                </v-list-item-content>
-               <v-list-item-action>
+               <v-list-item-action class="mx-0 mx-sm-2">
                   <v-btn @click="openEditBookDialog(book)" icon>
                      <v-icon color="blue">mdi-pencil</v-icon>
                   </v-btn>
                </v-list-item-action>
-               <v-list-item-action>
+               <v-list-item-action class="mx-0 mx-sm-2">
                   <v-btn @click="openDeleteBookDialog(book)" icon>
                      <v-icon color="red">mdi-delete</v-icon>
                   </v-btn>
@@ -112,7 +114,7 @@
          </v-btn>
       </div>
 
-   </div>
+   </v-card>
 </template>
  
 <script>
