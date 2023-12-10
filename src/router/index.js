@@ -9,7 +9,7 @@ const routes = [
   { path: '/', name: 'home', component: HomeView },
   { path: '/authors', name: 'authors', component: AuthorsView },
   // Esempio di Lazy Loading
-  { path: '/about', name: 'about', component: () => import('../views/AboutView.vue') },
+  // { path: '/authors', name: 'authors', component: () => import('../views/AuthorsView.vue') },
 ]
 
 const router = new VueRouter({
