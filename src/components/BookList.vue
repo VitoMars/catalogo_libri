@@ -157,16 +157,14 @@ export default {
       }
    },
    methods: {
-      // Metodo per aprire la dialog di inserimento libro
+      // Metodi di apertura Dialog
       openAddBookDialog() {
          this.addBookDialog = true;
       },
-      // Metodo per aprire la dialog per modificare il libro
       openEditBookDialog(book) {
          this.bookToEdit = { ...book };
          this.editBookDialog = true;
       },
-      // Metodo per aprire la dialog di conferma eliminazione
       openDeleteBookDialog(book) {
          this.bookToDelete = book;
          this.deleteBookDialog = true;
@@ -174,6 +172,19 @@ export default {
       openDetailBookDialog(book) {
          this.selectedBook = book;
          this.$refs.bookDetail.detailDialog = true;
+      },
+      // Metodi di reset
+      resetAddBookDialog() {
+         this.addBookDialog = false;
+         this.newBook = { title: '', author: '', publish_year: '' };
+      },
+      resetEditBookDialog() {
+         this.editBookDialog = false;
+         this.bookToEdit = { title: '', author: '', publish_year: '' };
+      },
+      resetDeleteBookDialog() {
+         this.deleteBookDialog = false;
+         this.bookToDelete = null;
       },
       // Metodo per aggiungere un nuovo libro
       addBook() {
@@ -192,12 +203,7 @@ export default {
             });
 
             // Reset Dialog e newBook
-            this.addBookDialog = false;
-            this.newBook = {
-               title: '',
-               author: '',
-               publish_year: '',
-            };
+            this.resetAddBookDialog();
          }
       },
       // Metodo per modificare un libro
@@ -214,13 +220,8 @@ export default {
                }
             }
 
-            // Reset Dialog e bookToEdit
-            this.editBookDialog = false;
-            this.bookToEdit = {
-               title: '',
-               author: '',
-               publish_year: '',
-            };
+            // Reset Dialog e newBook
+            this.resetEditBookDialog();
          }
       },
       // Metodo per elimianre un libro
@@ -236,8 +237,7 @@ export default {
          }
 
          // Reset Dialog e bookToDelete
-         this.deleteBookDialog = false;
-         this.bookToDelete = null;
+         this.resetDeleteBookDialog();
       },
       sortBooks(books, criteria, direction) {
          const sortedBooks = [...books];
