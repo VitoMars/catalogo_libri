@@ -139,16 +139,8 @@ export default {
          addBookDialog: false,
          editBookDialog: false,
          deleteBookDialog: false,
-         newBook: {
-            title: '',
-            author: '',
-            publish_year: '',
-         },
-         bookToEdit: {
-            title: '',
-            author: '',
-            publish_year: '',
-         },
+         newBook: { title: '', author: '', publish_year: '' },
+         bookToEdit: { title: '', author: '', publish_year: '' },
          bookToDelete: null,
          sortCriteria: 'title',
          sortDirection: 'asc',
