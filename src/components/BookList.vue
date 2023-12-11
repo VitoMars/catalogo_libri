@@ -155,16 +155,14 @@ export default {
       }
    },
    methods: {
-      // Metodo per aprire la dialog di inserimento libro
+      // Metodi di apertura Dialog
       openAddBookDialog() {
          this.addBookDialog = true;
       },
-      // Metodo per aprire la dialog per modificare il libro
       openEditBookDialog(book) {
          this.bookToEdit = { ...book };
          this.editBookDialog = true;
       },
-      // Metodo per aprire la dialog di conferma eliminazione
       openDeleteBookDialog(book) {
          this.bookToDelete = book;
          this.deleteBookDialog = true;
@@ -173,20 +171,28 @@ export default {
          this.selectedBook = book;
          this.$refs.bookDetail.detailDialog = true;
       },
+      // Metodi di reset Dialog
+      resetAddBookDialog() {
+         this.addBookDialog = false;
+         this.newBook = { title: '', author: '', publish_year: '' };
+      },
+      resetEditBookDialog() {
+         this.editBookDialog = false;
+         this.bookToEdit = { title: '', author: '', publish_year: '' };
+      },
+      resetDeleteBookDialog() {
+         this.deleteBookDialog = false;
+         this.bookToDelete = null;
+      },
       // Metodo per aggiungere un nuovo libro
       async addBook() {
          // Verifica la validità dei campi
          if (this.$refs.addBookForm.validate()) {
             try {
+               //Dispatch
                await this.$store.dispatch('addBook', this.newBook);
-
-               // Reset Dialog e newBook
-               this.addBookDialog = false;
-               this.newBook = {
-                  title: '',
-                  author: '',
-                  publish_year: '',
-               }
+               // Reset
+               this.resetAddBookDialog();
             } catch (error) {
                console.error('Errore durante l\'aggiunta del libro:', error);
             }
@@ -198,14 +204,7 @@ export default {
          if (this.$refs.editBookForm.validate()) {
             try {
                await this.$store.dispatch('editBook', this.bookToEdit);
-
-               // Reset Dialog e bookToEdit
-               this.editBookDialog = false;
-               this.bookToEdit = {
-                  title: '',
-                  author: '',
-                  publish_year: '',
-               };
+               this.resetEditBookDialog();
             } catch (error) {
                console.error('Errore durante la modifica del libro:', error);
             }
@@ -216,11 +215,7 @@ export default {
          if (this.bookToDelete) {
             try {
                await this.$store.dispatch('deleteBook', this.bookToDelete);
-
-               // Reset Dialog e bookToDelete
-               this.deleteBookDialog = false;
-               this.bookToDelete = null;
-
+               this.resetDeleteBookDialog();
             } catch (error) {
                console.error('Errore durante l\'elimianzione del libro:', error);
             }
