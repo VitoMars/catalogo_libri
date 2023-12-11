@@ -121,6 +121,12 @@
 import api from '@/apis/api.js'
 import BookDetail from '@/components/BookDetail.vue';
 
+const yearRules = [
+   // Potevo utilizzare una libreria per la gestione delle date come "moment" o "day.js" per ricavare l'anno corrente ma essendo un progetto di test ho evitato
+   v => /^\d{4}$/.test(v) || 'Inserisci un anno valido (es. 2023)',
+   v => (parseInt(v) >= 1600 && parseInt(v) <= 2023) || 'L\'anno deve essere compreso tra 1600 e 2023'
+];
+
 export default {
    components: {
       BookDetail,
@@ -149,11 +155,7 @@ export default {
          sortCriteria: 'title',
          sortDirection: 'asc',
          searchBook: '',
-         yearRules: [
-            v => /^\d{4}$/.test(v) || 'Inserisci un anno valido (es. 2023)',
-            v => (parseInt(v) >= 1600 && parseInt(v) <= 2023) || 'L\'anno deve essere compreso tra 1600 e 2023'
-            // Potevo utilizzare una libreria per la gestione delle date come "moment" o "day.js" per ricavare l'anno corrente ma essendo un progetto di test ho evitato
-         ]
+         yearRules: yearRules,
       }
    },
    methods: {
