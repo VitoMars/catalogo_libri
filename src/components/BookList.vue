@@ -128,9 +128,6 @@ export default {
    },
    data() {
       return {
-         // loading: false,
-         // books: [],
-         // authors: [],
          selectedBook: {},
          selectedAuthors: [],
          addBookDialog: false,
@@ -177,83 +174,57 @@ export default {
          this.$refs.bookDetail.detailDialog = true;
       },
       // Metodo per aggiungere un nuovo libro
-      // addBook() {
-      //    // Verifica la validità dei campi
-      //    if (this.$refs.addBookForm.validate()) {
-      //       if (!this.authors.includes(this.newBook.author)) {
-      //          this.authors.push(this.newBook.author);
-      //       }
-
-      //       // Aggiunta libro
-      //       this.books.push({
-      //          id: this.books.length + 1,
-      //          title: this.newBook.title,
-      //          author: this.newBook.author,
-      //          publish_year: this.newBook.publish_year,
-      //       });
-
-      //       // Reset Dialog e newBook
-      //       this.addBookDialog = false;
-      //       this.newBook = {
-      //          title: '',
-      //          author: '',
-      //          publish_year: '',
-      //       };
-      //    }
-      // },
       async addBook() {
-         try {
-            await this.$store.dispatch('addBook', this.newBook);
+         // Verifica la validità dei campi
+         if (this.$refs.addBookForm.validate()) {
+            try {
+               await this.$store.dispatch('addBook', this.newBook);
 
-            // Reset Dialog e newBook
-            this.addBookDialog = false;
-            this.newBook = {
-               title: '',
-               author: '',
-               publish_year: '',
-            };
-         } catch (error) {
-            console.error('Errore durante l\'aggiunta del libro:', error);
+               // Reset Dialog e newBook
+               this.addBookDialog = false;
+               this.newBook = {
+                  title: '',
+                  author: '',
+                  publish_year: '',
+               }
+            } catch (error) {
+               console.error('Errore durante l\'aggiunta del libro:', error);
+            }
          }
       },
       // Metodo per modificare un libro
-      editBook() {
+      async editBook() {
          // Verifica la validità dei campi
          if (this.$refs.editBookForm.validate()) {
-            if (this.bookToEdit) {
-               // Trovaviamo l'indice del libro da eliminare nell'array dei libri
-               const index = this.books.findIndex(book => book.id === this.bookToEdit.id);
+            try {
+               await this.$store.dispatch('editBook', this.bookToEdit);
 
-               // Se l'indice è valido, sostituisco il libro esistente con il libro modificato
-               if (index !== -1) {
-                  this.books.splice(index, 1, { ...this.bookToEdit });
-               }
+               // Reset Dialog e bookToEdit
+               this.editBookDialog = false;
+               this.bookToEdit = {
+                  title: '',
+                  author: '',
+                  publish_year: '',
+               };
+            } catch (error) {
+               console.error('Errore durante la modifica del libro:', error);
             }
-
-            // Reset Dialog e bookToEdit
-            this.editBookDialog = false;
-            this.bookToEdit = {
-               title: '',
-               author: '',
-               publish_year: '',
-            };
          }
       },
       // Metodo per elimianre un libro
-      deleteBook() {
+      async deleteBook() {
          if (this.bookToDelete) {
-            // Trovaviamo l'indice del libro da eliminare nell'array dei libri
-            const index = this.books.findIndex(book => book.id === this.bookToDelete.id);
+            try {
+               await this.$store.dispatch('deleteBook', this.bookToDelete);
 
-            // Se l'indice è valido, elimino il libro
-            if (index !== -1) {
-               this.books.splice(index, 1);
+               // Reset Dialog e bookToDelete
+               this.deleteBookDialog = false;
+               this.bookToDelete = null;
+
+            } catch (error) {
+               console.error('Errore durante l\'elimianzione del libro:', error);
             }
          }
-
-         // Reset Dialog e bookToDelete
-         this.deleteBookDialog = false;
-         this.bookToDelete = null;
       },
       sortBooks(books, criteria, direction) {
          const sortedBooks = [...books];

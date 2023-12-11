@@ -101,6 +101,30 @@ export default new Vuex.Store({
         console.error('Errore durante l\'aggiunta del libro:', error);
       }
     },
+    async editBook({ commit, state }, editedBook) {
+      try {
+        // Esegui la modifica del libro nello stato
+        commit('editBook', editedBook);
+
+        // Aggiorno la lista degli autori rimuovendo eventuali duplicati
+        const uniqueAuthors = [...new Set(state.books.map(book => book.author))];
+        commit('setAuthors', uniqueAuthors);
+      } catch (error) {
+        console.error('Errore durante la modifica del libro:', error);
+      }
+    },
+    async deleteBook({ commit, state }, bookToDelete) {
+      try {
+        // Esegui l'eliminazione del libro nello stato
+        commit('deleteBook', bookToDelete);
+
+        // Aggiorno la lista degli autori rimuovendo eventuali duplicati
+        const uniqueAuthors = [...new Set(state.books.map(book => book.author))];
+        commit('setAuthors', uniqueAuthors);
+      } catch (error) {
+        console.error('Errore durante l\'eliminazione del libro:', error);
+      }
+    },
   },
   modules: {}
 })
