@@ -28,74 +28,18 @@
 </template>
 
 <script>
-import api from '@/apis/api';
+import { mapGetters } from 'vuex';
 
 export default {
-   data() {
-      return {
-         loading: false,
-         authors: [],
-         books: [],
-         authorsWithBooks: [],
-
-         // Esempio Struttura
-         // authorsWithBooks: [
-         //    {
-         //       id: 1,
-         //       name: "Autore 1",
-         //       books: [
-         //          { id: 1, title: "Libro 1", publish_year: "Anno 1" },
-         //          { id: 2, title: "Libro 2", publish_year: "Anno 2" },
-         //       ],
-         //    },
-         //    {
-         //       id: 2,
-         //       name: "Autore 2",
-         //       books: [
-         //          { id: 1, title: "Libro 1", publish_year: "Anno 1" },
-         //          { id: 2, title: "Libro 2", publish_year: "Anno 2" },
-         //       ],
-         //    },
-         // ],
-      };
-   },
    async created() {
       try {
-         // Caricamento per l'utente
-         this.loading = true;
-
-         // Chiamata asincrona per ottenere i libri dall'API
-         const { reading_log_entries } = await api.getBooks();
-
-         // Trasformo i dati ottenuti dalla chiamata API in un formato migliore
-         this.books = reading_log_entries.map((apiBook, index) => ({
-            id: index,
-            title: apiBook.work.title ?? 'Sconosciuto',
-            author: apiBook.work.author_names[0] ?? 'Sconosciuto',
-            publish_year: apiBook.work.first_publish_year ?? 'Sconosciuto',
-            cover_url: apiBook.work.cover_id ? `https://covers.openlibrary.org/b/id/${apiBook.work.cover_id}-L.jpg` : null,
-         }));
-
-         this.books = this.books.filter(book => book.title !== 'Sconosciuto');
-
-         console.log("Books:", this.books);
-
-         // Creo una la lista degli autori dai libri
-         this.authors = this.books.map(book => book.author);
-
-         // Creo la struttura di authorsWithBooks
-         this.authorsWithBooks = this.authors.map((author, index) => ({
-            id: index,
-            name: author,
-            books: this.books.filter(book => book.author === author),
-         }));
-
+         await this.$store.dispatch('loadBooks');
       } catch (error) {
-         console.error('Errore durante il caricamento dei libri:', error);
-      } finally {
-         // Disabilito il caricamento per l'utente
-         this.loading = false;
+         console.error('Errore durante il caricamento dei libri', error);
       }
+   },
+   computed: {
+      ...mapGetters(['loading', 'authorsWithBooks']),
    },
 };
 </script>

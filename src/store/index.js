@@ -10,6 +10,7 @@ export default new Vuex.Store({
     loading: false,
     books: [],
     authors: [],
+    authorsWithBooks: [],
     newBook: { title: '', author: '', publish_year: '' },
     bookToEdit: { title: '', author: '', publish_year: '' },
   },
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     },
     authors(state) {
       return state.authors;
+    },
+    authorsWithBooks(state) {
+      return state.authorsWithBooks;
     },
     newBook(state) {
       return state.newBook;
@@ -39,6 +43,9 @@ export default new Vuex.Store({
     },
     setAuthors(state, authors) {
       state.authors = authors;
+    },
+    setAuthorsWithBooks(state, authorsWithBooks) {
+      state.authorsWithBooks = authorsWithBooks;
     },
     addBook(state, newBook) {
       state.books.push(newBook);
@@ -80,6 +87,14 @@ export default new Vuex.Store({
         // Creo una la lista degli autori dai libri
         const authors = books.map(book => book.author);
         commit('setAuthors', authors);
+
+        // Creo la struttura di authorsWithBooks
+        const authorsWithBooks = authors.map((author, index) => ({
+          id: index,
+          name: author,
+          books: books.filter(book => book.author === author),
+        }));
+        commit('setAuthorsWithBooks', authorsWithBooks);
 
       } catch (error) {
         console.error('Errore durante il caricamento dei libri:', error);
