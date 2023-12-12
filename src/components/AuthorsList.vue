@@ -31,12 +31,9 @@
 import { mapGetters } from 'vuex';
 
 export default {
-   async created() {
-      try {
-         await this.$store.dispatch('loadBooks');
-      } catch (error) {
-         console.error('Errore durante il caricamento dei libri', error);
-      }
+   created() {
+      this.$store.dispatch('loadBooks');
+      // Try catch non necessario poichè già inserito nello store di Vuex
    },
    computed: {
       ...mapGetters(['loading', 'authorsWithBooks']),
